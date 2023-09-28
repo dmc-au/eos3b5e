@@ -107,4 +107,7 @@ jobs:
           aws-region: eu-central-1
           
       - name: Upload to S3
-        run: aws s3 cp output.csv s3://isaura-bucket/out/$MODEL_ID/output/output.csv
+        run: |
+          aws s3 cp output.csv s3://isaura-bucket/out/$MODEL_ID/output/output.csv
+          aws s3 cp pci-upload.csv s3://isaura-bucket/out/$MODEL_ID/output/pci.csv
+        
