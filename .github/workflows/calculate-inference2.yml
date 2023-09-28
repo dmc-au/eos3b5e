@@ -43,6 +43,20 @@ jobs:
           echo "After conda init"
           conda init
           python -m pip install -e .[test]
+
+      - name: Get full input library
+        run: |
+          # TODO: curl ...
+          
+
+      - name: Remove pre-calculated inputs
+        run: |
+          # Download previously calculated inputs (pci)
+          aws s3 cp s3://isaura-bucket/out/$MODEL_ID/output/pci.csv .
+          # Remove pci from new desired input.csv
+          { head -n 1 input.csv; grep -v -F -x -f <(tail -n +2 pci.csv) <(tail -n +2 input.csv); } > modified-input.csv
+          # Set final pci to upload
+          awk '(NR == 1) || (FNR > 1)' pci.csv modified-input.csv > pci-upload.csv
           
       - name: Predict output
         run: |
@@ -51,8 +65,8 @@ jobs:
           ersilia fetch $MODEL_ID
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
-          ersilia sample -n 100 -f input.csv
-          ersilia api -i input.csv -o output.csv
+          # ersilia sample -n 100 -f modified-input.csv
+          ersilia api -i modified-input.csv -o output.csv
 
       - name: Cache output
         uses: actions/cache@master
