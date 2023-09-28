@@ -5,7 +5,7 @@ permissions:
   contents: read
 
 env:
-  MODEL_ID: eos2r5a
+  MODEL_ID: ${{ github.event.repository.name }}
   SHA: ${{ github.sha }}
 
 jobs:
@@ -52,12 +52,12 @@ jobs:
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
           ersilia sample -n 100 -f input.csv
-          ersilia api -i input.csv -o $SHA.csv
+          ersilia api -i input.csv -o output.csv
 
       - name: Cache output
         uses: actions/cache@master
         with:
-          path: ${{ github.sha }}.csv
+          path: output.csv
           key: ${{ runner.os }}-output
 
       - name: Close Ersilia session 
@@ -76,21 +76,21 @@ jobs:
       - name: Retrieve cached output
         uses: actions/cache@master
         with:
-          path: ${{ github.sha }}.csv
+          path: output.csv
           key: ${{ runner.os }}-output
     
       - name: Archive artifact
         uses: actions/upload-artifact@master
         with:
           name: prediction-output
-          path: ${{ github.sha }}.csv
+          path: output.csv
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: eu-central-1
           
       - name: Upload to S3
-        run: aws s3 cp ${{ github.sha }}.csv s3://isaura-bucket/out/$MODEL_ID/${{ github.sha }}.csv
+        run: aws s3 cp output.csv s3://isaura-bucket/out/$MODEL_ID/output/output.csv
