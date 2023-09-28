@@ -46,17 +46,17 @@ jobs:
 
       - name: Get full input library
         run: |
-          # TODO: curl ...
-          
+          # TODO: curl ... rl.csv
+          mv rl-10000.csv rl.csv  # Temporary 10,000 row rl file.
 
       - name: Remove pre-calculated inputs
         run: |
           # Download previously calculated inputs (pci)
           aws s3 cp s3://isaura-bucket/out/$MODEL_ID/output/pci.csv .
-          # Remove pci from new desired input.csv
-          { head -n 1 input.csv; grep -v -F -x -f <(tail -n +2 pci.csv) <(tail -n +2 input.csv); } > modified-input.csv
+          # Remove pci from new reference library
+          { head -n 1 rl.csv; grep -v -F -x -f <(tail -n +2 pci.csv) <(tail -n +2 rl.csv); } > delta-input.csv
           # Set final pci to upload
-          awk '(NR == 1) || (FNR > 1)' pci.csv modified-input.csv > pci-upload.csv
+          awk '(NR == 1) || (FNR > 1)' pci.csv delta-input.csv > pci-upload.csv
           
       - name: Predict output
         run: |
@@ -65,8 +65,8 @@ jobs:
           ersilia fetch $MODEL_ID
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
-          # ersilia sample -n 100 -f modified-input.csv
-          ersilia api -i modified-input.csv -o $SHA.csv
+          # ersilia sample -n 100 -f delta-input.csv
+          ersilia api -i delta-input.csv -o $SHA.csv
 
       - name: Cache output
         uses: actions/cache@master
@@ -90,7 +90,7 @@ jobs:
       - name: Retrieve cached output
         uses: actions/cache@master
         with:
-          path: $SHA.csv
+          path: ${{ github.sha }}.csv
           key: ${{ runner.os }}-output
     
       - name: Archive artifact
@@ -108,6 +108,6 @@ jobs:
           
       - name: Upload to S3
         run: |
-          aws s3 cp ${{ github.sha }}.csv s3://isaura-bucket/out/$MODEL_ID/output/${{ github.sha }}.csv
+          aws s3 cp $SHA.csv s3://isaura-bucket/out/$MODEL_ID/output/$SHA.csv
           aws s3 cp pci-upload.csv s3://isaura-bucket/out/$MODEL_ID/output/pci.csv
         
