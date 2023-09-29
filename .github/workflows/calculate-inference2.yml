@@ -76,20 +76,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0 
-      
-      - name: Configure Git
-        run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
 
-      - name: Create a new file and commit it
+      - name: Commit and push changes
         run: |
           mv ../$SHA.csv $SHA.csv
+          git config --global user.name 'Dave'
+          git config --global user.email 'dmc-au@users.noreply.github.com'
           git add $SHA.csv
           git commit -m "Add $SHA.csv"
-          
-      - name: Push changes
-        run: |
           git push origin HEAD:main
         
       #- name: Upload artefacts to repo
