@@ -70,13 +70,33 @@ jobs:
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
           # ersilia sample -n 100 -f input.csv
-          ersilia api -i rl-10000.csv -o $SHA.csv
+          ersilia api -i rl-10000.csv -o ../$SHA.csv
 
-      - name: Upload artefacts to repo
-        uses: actions/upload-artifact@v3
+      - name: Checkout model repo for demo library
+        uses: actions/checkout@v3
         with:
-          name: inference-output
-          path: ${{ github.sha }}.csv
+          fetch-depth: 0 
+      
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+
+      - name: Create a new file and commit it
+        run: |
+          mv ../$SHA.csv $SHA.csv
+          git add $SHA.csv
+          git commit -m "Add $SHA.csv"
+          
+      - name: Push changes
+        run: |
+          git push origin HEAD:main
+        
+      #- name: Upload artefacts to repo
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: inference-output
+      #    path: ${{ github.sha }}.csv
 
       # - name: Cache output
       #   uses: actions/cache@master
