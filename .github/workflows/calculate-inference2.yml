@@ -35,6 +35,8 @@ jobs:
           ls .
           echo "##### contents of parent folder #####"
           ls ..
+          echo "##### contents of ersilia #####"
+          ls ersilia
 
       #- name: Switch to ersilia dir
       #  run: |
@@ -62,6 +64,8 @@ jobs:
           
       - name: Install ersilia
         run: |
+          echo "### pwd ###"
+          pwd
           source activate
           python --version
           echo "After conda init"
