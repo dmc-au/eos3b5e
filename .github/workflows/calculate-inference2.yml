@@ -31,8 +31,10 @@ jobs:
       - name: Where am I after checking in?
         run: |
           pwd
-          echo "##### current folder #####"
+          echo "##### contents of current folder #####"
           ls .
+          echo "##### contents of parent folder #####"
+          ls ..
 
       #- name: Switch to ersilia dir
       #  run: |
