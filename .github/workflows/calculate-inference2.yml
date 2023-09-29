@@ -16,7 +16,7 @@ jobs:
       - name: Checkout model repo for demo library
         uses: actions/checkout@v3
         with:
-          path: reference-library
+          path: demo-model
 
       - name: Get full input library
         run: |
@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ersilia-os/ersilia
+          path: ersilia
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
@@ -72,14 +73,25 @@ jobs:
           # ersilia sample -n 100 -f input.csv
           ersilia api -i reference-library/rl-10000.csv -o $SHA.csv
 
-      - name: Cache output
-        uses: actions/cache@master
+      - name: Checkout model repo for demo library
+        uses: actions/checkout@v3
         with:
-          path: ${{ github.sha }}.csv
-          key: ${{ runner.os }}-output
+          path: demo-model
 
-      - name: Close Ersilia session 
-        run: ersilia close
+      - name: Upload artefacts to repo
+        uses: actions/upload-artifact@v3
+        with:
+          name: inference-output
+          path: ersilia/${{ github.sha }}.csv
+
+      # - name: Cache output
+      #   uses: actions/cache@master
+      #   with:
+      #     path: ${{ github.sha }}.csv
+      #     key: ${{ runner.os }}-output
+
+      # - name: Close Ersilia session 
+      #   run: ersilia close
 
   # upload:
   #   runs-on: ubuntu-latest
