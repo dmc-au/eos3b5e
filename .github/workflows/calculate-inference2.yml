@@ -13,6 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Checkout model repo for demo library
+        uses: actions/checkout@v3
+        with:
+          path: reference-library
+
+      - name: Get full input library
+        run: |
+          # TODO: curl ... rl.csv
+          mv rl-10000.csv rl.csv  # Temporary 10,000 row rl file.
+      
       - name: Check into ersilia-os/ersilia repo 
         uses: actions/checkout@v3
         with:
@@ -44,14 +54,6 @@ jobs:
           conda init
           python -m pip install -e .[test]
 
-      - name: Check into model repo
-        uses: actions/checkout@v3
-
-      - name: Get full input library
-        run: |
-          # TODO: curl ... rl.csv
-          mv rl-10000.csv rl.csv  # Temporary 10,000 row rl file.
-
       - name: Remove pre-calculated inputs
         run: |
           # Download previously calculated inputs (pci)
@@ -68,8 +70,8 @@ jobs:
           ersilia fetch $MODEL_ID
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
-          # ersilia sample -n 100 -f delta-input.csv
-          ersilia api -i delta-input.csv -o $SHA.csv
+          # ersilia sample -n 100 -f input.csv
+          ersilia api -i reference-library/rl-10000.csv -o $SHA.csv
 
       - name: Cache output
         uses: actions/cache@master
