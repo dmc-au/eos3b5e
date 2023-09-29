@@ -31,11 +31,16 @@ jobs:
       - name: Where am I after checking in?
         run: |
           ls .
+          echo "##### demo-model folder #####"
           ls demo-model
+          echo "##### demo-model folder #####"
           ls ersilia
 
       - name: Switch to ersilia dir
-        run: cd ersilia
+        run: |
+          cd ersilia
+          echo "##### pwd #####"
+          pwd
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
