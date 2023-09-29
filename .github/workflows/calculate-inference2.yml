@@ -28,6 +28,9 @@ jobs:
           repository: ersilia-os/ersilia
           path: ersilia
 
+      - name: Where am I after checking in?
+        run: ls .
+
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
 
@@ -37,9 +40,6 @@ jobs:
       - name: Set Python to 3.10.10
         run:
          conda install -y python=3.10.10
-
-      - name: Move to ersilia dir
-        run: cd ersilia
 
       - name: Install dependencies
         run: |
