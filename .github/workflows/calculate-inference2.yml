@@ -38,11 +38,9 @@ jobs:
           echo "##### contents of ersilia #####"
           ls ersilia
 
-      #- name: Switch to ersilia dir
-      #  run: |
-      #    cd ersilia
-      #    echo "##### pwd #####"
-      #    pwd
+      - name: Switch to ersilia dir
+        run: |
+          cd ersilia
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
