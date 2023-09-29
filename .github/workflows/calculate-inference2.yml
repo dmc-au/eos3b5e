@@ -52,11 +52,11 @@ jobs:
       - name: Remove pre-calculated inputs
         run: |
           # Download previously calculated inputs (pci)
-          aws s3 cp s3://isaura-bucket/out/$MODEL_ID/output/pci.csv .
+          # aws s3 cp s3://isaura-bucket/out/$MODEL_ID/output/pci.csv .
           # Remove pci from new reference library
-          { head -n 1 rl.csv; grep -v -F -x -f <(tail -n +2 pci.csv) <(tail -n +2 rl.csv); } > delta-input.csv
+          # { head -n 1 rl.csv; grep -v -F -x -f <(tail -n +2 pci.csv) <(tail -n +2 rl.csv); } > delta-input.csv
           # Set final pci to upload
-          awk '(NR == 1) || (FNR > 1)' pci.csv delta-input.csv > pci-upload.csv
+          # awk '(NR == 1) || (FNR > 1)' pci.csv delta-input.csv > pci-upload.csv
           
       - name: Predict output
         run: |
@@ -71,43 +71,54 @@ jobs:
       - name: Cache output
         uses: actions/cache@master
         with:
-          path: output.csv
+          path: ${{ github.sha }}.csv
           key: ${{ runner.os }}-output
 
       - name: Close Ersilia session 
         run: ersilia close
 
-  upload:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+  # upload:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
 
-      - name: Check into ersilia-os/ersilia repo 
-        uses: actions/checkout@master
-        with:
-          repository: ersilia-os/ersilia
+      # - name: Check into ersilia-os/ersilia repo 
+      #   uses: actions/checkout@master
+      #   with:
+      #     repository: ersilia-os/ersilia
 
-      - name: Retrieve cached output
-        uses: actions/cache@master
-        with:
-          path: ${{ github.sha }}.csv
-          key: ${{ runner.os }}-output
+      # - name: Retrieve cached output
+      #   uses: actions/cache@master
+      #   with:
+      #     path: ${{ github.sha }}.csv
+      #     key: ${{ runner.os }}-output
     
-      - name: Archive artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: prediction-output
-          path: output.csv
+      # - name: Archive artifact
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: prediction-output
+      #     path: output.csv
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
+      #### Upload output to repo (Dave)
+      # - name: Check into demo repo
+      #   uses: actions/checkout@v3
+
+      # - name: Upload artefacts to repo
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: inference-output
+      #     path: ${{ github.sha }}.csv
+      ####
+
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: eu-central-1
           
-      - name: Upload to S3
-        run: |
-          aws s3 cp $SHA.csv s3://isaura-bucket/out/$MODEL_ID/output/$SHA.csv
-          aws s3 cp pci-upload.csv s3://isaura-bucket/out/$MODEL_ID/output/pci.csv
+      # - name: Upload to S3
+      #   run: |
+      #     aws s3 cp $SHA.csv s3://isaura-bucket/out/$MODEL_ID/output/$SHA.csv
+      #     aws s3 cp pci-upload.csv s3://isaura-bucket/out/$MODEL_ID/output/pci.csv
         
