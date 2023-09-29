@@ -38,6 +38,9 @@ jobs:
         run:
          conda install -y python=3.10.10
 
+      - name: Move to ersilia dir
+        run: cd ersilia
+
       - name: Install dependencies
         run: |
           source activate
