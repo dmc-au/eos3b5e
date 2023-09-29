@@ -29,7 +29,13 @@ jobs:
           path: ersilia
 
       - name: Where am I after checking in?
-        run: ls .
+        run: |
+          ls .
+          ls demo-model
+          ls ersilia
+
+      - name: Switch to ersilia dir
+        run: cd ersilia
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
