@@ -21,7 +21,6 @@ jobs:
       - name: Get full input library
         run: |
           # TODO: curl ... rl.csv
-          mv rl-10000.csv rl.csv  # Temporary 10,000 row rl file.
       
       - name: Check into ersilia-os/ersilia repo 
         uses: actions/checkout@v3
