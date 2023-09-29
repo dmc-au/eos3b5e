@@ -31,8 +31,6 @@ jobs:
       - name: Where am I after checking in?
         run: |
           pwd
-          echo "##### demo-model folder #####"
-          ls demo-model
           echo "##### current folder #####"
           ls .
 
