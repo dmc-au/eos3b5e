@@ -13,34 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout model repo for demo library
-        uses: actions/checkout@v3
-        with:
-          path: demo-model
-
-      - name: Get full input library
-        run: |
-          # TODO: curl ... rl.csv
+      #- name: Checkout model repo for demo library
+      #  uses: actions/checkout@v3
+      #  with:
+      #    path: demo-model
       
       - name: Check into ersilia-os/ersilia repo 
         uses: actions/checkout@v3
         with:
           repository: ersilia-os/ersilia
-          path: ersilia
-
-      - name: Where am I after checking in?
-        run: |
-          pwd
-          echo "##### contents of current folder #####"
-          ls .
-          echo "##### contents of parent folder #####"
-          ls ..
-          echo "##### contents of ersilia #####"
-          ls ersilia
-
-      - name: Switch to ersilia dir
-        run: |
-          cd ersilia
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
@@ -62,14 +43,16 @@ jobs:
           
       - name: Install ersilia
         run: |
-          echo "### pwd ###"
-          pwd
           source activate
           python --version
           echo "After conda init"
           conda init
           python -m pip install -e .[test]
 
+      - name: Get full input library
+        run: |
+          curl https://raw.githubusercontent.com/dmc-au/eos3b5e/main/rl-10000.csv > rl-10000.csv
+          
       - name: Remove pre-calculated inputs
         run: |
           # Download previously calculated inputs (pci)
@@ -87,18 +70,13 @@ jobs:
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
           # ersilia sample -n 100 -f input.csv
-          ersilia api -i reference-library/rl-10000.csv -o $SHA.csv
-
-      - name: Checkout model repo for demo library
-        uses: actions/checkout@v3
-        with:
-          path: demo-model
+          ersilia api -i rl-10000.csv -o $SHA.csv
 
       - name: Upload artefacts to repo
         uses: actions/upload-artifact@v3
         with:
           name: inference-output
-          path: ersilia/${{ github.sha }}.csv
+          path: ${{ github.sha }}.csv
 
       # - name: Cache output
       #   uses: actions/cache@master
