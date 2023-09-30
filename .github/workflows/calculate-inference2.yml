@@ -1,6 +1,7 @@
 name: Calculate Inference Pipeline
 on: push                                         
 
+
 permissions:
   contents: write
 
