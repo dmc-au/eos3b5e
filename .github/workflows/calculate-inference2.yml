@@ -62,7 +62,7 @@ jobs:
       - name: Get full input library
         run: |
           # curl https://raw.githubusercontent.com/dmc-au/eos3b5e/main/rl-10000.csv > rl-10000.csv
-          aws s3 cp s3://isaura-bucket/reference_library.csv
+          aws s3 cp s3://isaura-bucket/reference_library.csv reference_library.csv
           
       - name: Remove pre-calculated inputs
         run: |
