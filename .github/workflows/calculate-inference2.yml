@@ -81,7 +81,7 @@ jobs:
           ersilia fetch $MODEL_ID
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
-          # ersilia sample -n 100 -f input.csv
+          # ersilia sample -n 100 -f input.csv -b 1000
           ersilia api -i rl_100000.csv -o ../$SHA.csv
 
       - name: Upload to S3
