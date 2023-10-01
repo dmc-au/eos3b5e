@@ -63,7 +63,7 @@ jobs:
       - name: Get full input library
         run: |
           # curl https://raw.githubusercontent.com/dmc-au/eos3b5e/main/rl-10000.csv > rl-10000.csv
-          aws s3 cp s3://isaura-bucket/reference_library.csv reference_library.csv
+          aws s3 cp s3://isaura-bucket/rl_100000.csv rl_100000.csv
           
       - name: Remove pre-calculated inputs
         run: |
@@ -82,7 +82,7 @@ jobs:
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
           # ersilia sample -n 100 -f input.csv
-          ersilia api -i reference_library.csv -o ../$SHA.csv
+          ersilia api -i rl_100000 -o ../$SHA.csv
           tail -n 100 ../$SHA.csv
 
       - name: Upload to S3
