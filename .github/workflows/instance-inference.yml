@@ -40,11 +40,11 @@ jobs:
       - name: Split library by partition variables
         run: |
           ## numerator
-          $numerator=${{ inputs.numerator }}
+          numerator=${{ inputs.numerator }}
           echo $numerator
           
           ## denominator
-          $denominator=${{ inputs.denominator }}
+          denominator=${{ inputs.denominator }}
           echo $denominator
           
           filename="rl_100000.csv"
