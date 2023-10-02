@@ -13,8 +13,6 @@ on:
 env:
   MODEL_ID: ${{ github.event.repository.name }}
   SHA: ${{ github.sha }}
-  # numerator: ${{ inputs.numerator }}
-  # denominator: ${{ inputs.denominator }}
 
 jobs:
   infer-and-upload:
@@ -42,10 +40,12 @@ jobs:
       - name: Split library by partition variables
         run: |
           ## numerator
-          echo "${{ inputs.numerator }}"
+          $numerator=${{ inputs.numerator }}
+          echo $numerator
           
           ## denominator
-          echo "${{ inputs.numerator }}"
+          $denominator=${{ inputs.denominator }}
+          echo $denominator
           
           filename="rl_100000.csv"
           
