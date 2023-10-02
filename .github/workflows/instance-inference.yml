@@ -67,7 +67,7 @@ jobs:
 
       - name: Split library by partition variables
         run: |
-          filename = "rl_100000.csv"
+          filename="rl_100000.csv"
           total_lines=$(wc -l < "$filename")
           ((lines_per_file = (total_lines + ($denominator-1)) / $denominator))
           split -l $lines_per_file -a 4 -d --additional-suffix=.csv "$filename" partition_
