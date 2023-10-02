@@ -10,12 +10,10 @@ env:
 
 jobs:
   partition-1:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: dmc-au/eos3b5e/.github/actions/perform-inference@master
-        with:
-          numerator: 1
-          denominator: 1
+    uses: ./.github/workflows/instance-inference.yml
+    with:
+      numerator: 1
+      denominator: 1
   
   # partition-2:
   #   runs-on: ubuntu-latest
