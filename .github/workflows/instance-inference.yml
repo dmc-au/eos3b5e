@@ -89,6 +89,7 @@ jobs:
           
       - name: Predict output (for input partition)
         run: |
+          numerator=${{ inputs.numerator }}
           source activate
           echo "Sample model id selected: $MODEL_ID"
           ersilia fetch $MODEL_ID
