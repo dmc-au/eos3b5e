@@ -1,4 +1,4 @@
-name: Perform Inference
+name: Perform Instance Inference
 
 on:
   workflow_call:
@@ -28,11 +28,18 @@ jobs:
         with:
           repository: ersilia-os/ersilia
 
-      - name: Set up Conda, Python, and dependencies
+      - name: Add conda to system path
+        run: echo $CONDA/bin >> $GITHUB_PATH
+
+      - name: Source conda
+        run: source $CONDA/etc/profile.d/conda.sh
+
+      - name: Set Python to 3.10.10
+        run:
+         conda install -y python=3.10.10
+
+      - name: Install dependencies
         run: |
-          echo $CONDA/bin >> $GITHUB_PATH
-          source $CONDA/etc/profile.d/conda.sh
-          conda install -y python=3.10.10
           source activate
           conda init
           conda install git-lfs -c conda-forge
