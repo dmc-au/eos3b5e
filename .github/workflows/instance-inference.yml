@@ -96,10 +96,10 @@ jobs:
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
           # ersilia api -i rl_100000.csv -o ../$SHA.csv
-          ersilia api -i partition_000$(($numerator - 1)).csv -o ../$SHA_000$(($numerator - 1)).csv
+          ersilia api -i partition_000$(($numerator - 1)).csv -o ../${SHA}_000$(($numerator - 1)).csv
 
       - name: Upload to S3
         run: |
           numerator=${{ inputs.numerator }}
-          aws s3 cp ../$SHA_000$(($numerator - 1)).csv s3://isaura-bucket/out/$MODEL_ID/output/$SHA_000$(($numerator - 1)).csv
+          aws s3 cp ../${SHA}_000$(($numerator - 1)).csv s3://isaura-bucket/out/$MODEL_ID/output/${SHA}_000$(($numerator - 1)).csv
           # aws s3 cp pci-upload.csv s3://isaura-bucket/out/$MODEL_ID/output/pci.csv
