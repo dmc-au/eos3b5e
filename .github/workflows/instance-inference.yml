@@ -6,17 +6,15 @@ on:
       numerator:
         required: true
         type: number
-        default: 1
       denominator:
         required: true
         type: number
-        default: 1
 
 env:
   MODEL_ID: ${{ github.event.repository.name }}
   SHA: ${{ github.sha }}
-  numerator: ${{ numerator }}
-  denominator: ${{ denominator }}
+  # numerator: ${{ numerator }}
+  # denominator: ${{ denominator }}
 
 jobs:
   infer-and-upload:
