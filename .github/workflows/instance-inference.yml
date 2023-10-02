@@ -67,9 +67,11 @@ jobs:
 
       - name: Split library by partition variables
         run: |
+          echo $numerator
+          echo $denominator
           filename="rl_100000.csv"
           total_lines=$(wc -l < "$filename")
-          ((lines_per_file = (total_lines + ($denominator-1)) / $denominator))
+          ((lines_per_file = (total_lines + $denominator-1) / $denominator))
           split -l $lines_per_file -a 4 -d --additional-suffix=.csv "$filename" partition_
           ls
           # Add 'smiles' to all partitions > 1
