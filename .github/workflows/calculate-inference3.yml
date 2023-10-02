@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/instance-inference.yml
     with:
       numerator: 1
-      denominator: 2
+      denominator: 1
     secrets: inherit
 
   # partition-2:
