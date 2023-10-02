@@ -12,23 +12,19 @@ jobs:
   partition-1:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout model repo
-        uses: actions/checkout@v4
-        
-      - name: Perform Inference
-        uses: ./.github/actions/perform-inference
+      - uses: dmc-au/eos3b5e/.github/actions/perform-inference@master
         with:
           numerator: 1
-          denominator: 2
+          denominator: 1
   
-  partition-2:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout model repo
-        uses: actions/checkout@v4
+  # partition-2:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout model repo
+  #       uses: actions/checkout@v4
         
-      - name: Perform Inference
-        uses: ./.github/actions/perform-inference.yml
-        with:
-          numerator: 2
-          denominator: 2
+  #     - name: Perform Inference
+  #       uses: ./.github/actions/perform-inference.yml
+  #       with:
+  #         numerator: 2
+  #         denominator: 2
