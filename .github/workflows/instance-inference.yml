@@ -13,8 +13,8 @@ on:
 env:
   MODEL_ID: ${{ github.event.repository.name }}
   SHA: ${{ github.sha }}
-  # numerator: ${{ numerator }}
-  # denominator: ${{ denominator }}
+  numerator: ${{ numerator }}
+  denominator: ${{ denominator }}
 
 jobs:
   infer-and-upload:
