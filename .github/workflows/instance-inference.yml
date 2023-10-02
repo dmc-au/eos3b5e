@@ -69,21 +69,28 @@ jobs:
         run: |
           ## numerator
           echo $numerator
+          
           ## denominator
           echo $denominator
+          
           filename="rl_100000.csv"
+          
           ## total_lines
           total_lines=$(wc -l < "$filename")
           echo $total_lines
-          ((lines_per_file = (total_lines + $denominator-1) / $denominator))
-          split -l $lines_per_file -a 4 -d --additional-suffix=.csv "$filename" partition_
-          ls
-          # Add 'smiles' to all partitions > 1
-          for (( i=1; i<$denominator; i++ ))
-          do
-            partition=$(printf "partition_%04d.csv" $i)
-            sed -i '1i smiles' "$partition"
-          done
+          
+          # Determine the # of file lines per partition
+          # ((lines_per_file = (total_lines + $denominator-1) / $denominator))
+
+          # Split the file
+          # split -l $lines_per_file -a 4 -d --additional-suffix=.csv "$filename" partition_
+          
+          # Add 'smiles' to header of all partition files beyond the first
+          # for (( i=1; i<$denominator; i++ ))
+          # do
+          #   partition=$(printf "partition_%04d.csv" $i)
+          #   sed -i '1i smiles' "$partition"
+          # done
           
       - name: Predict output (for input partition)
         run: |
@@ -92,7 +99,8 @@ jobs:
           ersilia fetch $MODEL_ID
           ersilia serve $MODEL_ID
           echo "$MODEL_ID succesfully fetched and served"
-          ersilia api -i partition_000$numerator.csv -o ../$SHA.csv
+          ersilia api -i rl_100000.csv -o ../$SHA.csv
+          # ersilia api -i partition_000$numerator.csv -o ../$SHA.csv
 
       - name: Upload to S3
         run: |  
