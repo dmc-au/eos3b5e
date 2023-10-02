@@ -1,0 +1,82 @@
+name: Perform Inference
+
+description: 'Perform inference and upload data'
+
+inputs:
+  numerator:
+    description: 'The current partition count'
+    required: true
+    default: 1
+  denominator:
+    description: 'The total partition count'
+    required: true
+    default: 1
+    
+runs:
+  using: "composite"
+  steps:
+      - name: Print system details
+          run: sudo lshw -short
+      
+      - name: Check into ersilia-os/ersilia repo 
+        uses: actions/checkout@v3
+        with:
+          repository: ersilia-os/ersilia
+
+      - name: Set up Conda, Python, and dependencies
+        run: |
+          echo $CONDA/bin >> $GITHUB_PATH
+          source $CONDA/etc/profile.d/conda.sh
+          conda install -y python=3.10.10
+          source activate
+          conda init
+          conda install git-lfs -c conda-forge
+          git-lfs install
+          conda install gh -c conda-forge
+          
+      - name: Install ersilia
+        run: |
+          source activate
+          python --version
+          echo "After conda init"
+          conda init
+          python -m pip install -e .[test]
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+           aws-region: eu-central-1
+      
+      - name: Get input library
+        run: |
+          aws s3 cp s3://isaura-bucket/rl_100000.csv rl_100000.csv
+
+      - name: Split library by partition variables
+        run: |
+          filename = "rl_100000.csv"
+          total_lines=$(wc -l < "$filename")
+          ((lines_per_file = (total_lines + ($denominator-1)) / $denominator))
+          split -l $lines_per_file -a 4 -d --additional-suffix=.csv "$filename" partition_
+          ls
+          # Add 'smiles' to all partitions > 1
+          for (( i=1; i<$denominator; i++ ))
+          do
+            partition=$(printf "partition_%04d.csv" $i)
+            sed -i '1i smiles' "$partition"
+          done
+          
+      - name: Predict output (for input partition)
+        run: |
+          source activate
+          echo "Sample model id selected: $MODEL_ID"
+          ersilia fetch $MODEL_ID
+          ersilia serve $MODEL_ID
+          echo "$MODEL_ID succesfully fetched and served"
+          ersilia api -i partition_000$numerator.csv -o ../$SHA.csv
+
+      - name: Upload to S3
+        run: |  
+          aws s3 cp ../$SHA.csv s3://isaura-bucket/out/$MODEL_ID/output/$SHA.csv
+          # aws s3 cp pci-upload.csv s3://isaura-bucket/out/$MODEL_ID/output/pci.csv
