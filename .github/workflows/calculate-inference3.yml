@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Perform Inference
-        uses: ./.github/actions/perform-inference
+        uses: ./.github/actions/perform-inference.yml
         with:
           numerator: 1
           denominator: 2
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Perform Inference
-        uses: ./.github/actions/perform-inference
+        uses: ./.github/actions/perform-inference.yml
         with:
           numerator: 2
           denominator: 2
