@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Perform Inference
-        uses: ./.github/actions/perform-inference.yml
+      - uses: ./.github/actions/perform-inference
         with:
           numerator: 1
           denominator: 2
@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Perform Inference
-        uses: ./.github/actions/perform-inference.yml
+      - uses: ./.github/actions/perform-inference.yml
         with:
           numerator: 2
           denominator: 2
