@@ -5,16 +5,27 @@ permissions:
   contents: read
 
 jobs:
-  partition-1:
+  matrix-inference:
+    strategy:
+      matrix:
+        numerator: [1,2,3,4,5]
     uses: ./.github/workflows/instance-inference.yml
     with:
-      numerator: 1
-      denominator: 2
+      numerator: ${{ matrix.numerator }}
+      denominator: 5
     secrets: inherit
 
-  partition-2:
-    uses: ./.github/workflows/instance-inference.yml
-    with:
-      numerator: 2
-      denominator: 2
-    secrets: inherit
+    
+#   partition-1:
+#     uses: ./.github/workflows/instance-inference.yml
+#     with:
+#       numerator: 1
+#       denominator: 2
+#     secrets: inherit
+
+#   partition-2:
+#     uses: ./.github/workflows/instance-inference.yml
+#     with:
+#       numerator: 2
+#       denominator: 2
+#     secrets: inherit
